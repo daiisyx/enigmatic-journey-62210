@@ -3,6 +3,13 @@ const path = require('path') /*pre-installed library*/
 const PORT = process.env.PORT || 5000
 // either production environment or local 5000
 
+const { Pool } = require('pg'); 
+var pool; 
+pool = new Pool ({ // a constructor pool 
+	// connectionString: 'postgres://postgres:root@localhost/users' //scheme://user:password@localhost/database
+	connectionString: process.env.DATABASE_URL; 
+});
+
 var app = express(); // building a app
 app.use(express.json()); // to make it work with json
 app.use(express.urlencoded({extended:false})); // making server understand url
@@ -15,8 +22,13 @@ app.set('view engine', 'ejs'); //the .ejs files add more functionalities to the 
 app.get('/', (req, res) => res.render('pages/index'));
 // what to do if request is database 
 app.get('/database', (req, res) => { // whenever user types into the app
-	var data = {results: [2, 3, 4, 5, 6]}; 
-	res.render('pages/db', data);
+	var getUserQuery = 'SELECT * FROM usr'; 
+	pool.query(getUserQuery, (error, result)=>{
+		if (error)
+			res.end(error); // send error object if there is error
+		var results = {'rows': result.rows}; // array of rows
+		res.render('pages/db', results);
+	})
 }); 
 
 // from the post method of the user, and will do the corresponding actions

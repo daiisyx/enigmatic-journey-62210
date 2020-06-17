@@ -1,0 +1,43 @@
+<!DOCTYPE html> <!-- determining document type -->
+<!-- it has a hierarchical structure
+     e.g. head and body are children of html container -->
+<!-- each tag is like a node to a tree -->
+<html lang = "en" dir = "ltr"> 
+	<head> <!-- information of the page -->
+		<title>my webpage</title>
+		<link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+		<!-- linking to a stylesheet -->
+	</head>
+	<body> <!-- body of the webpage -->
+		<nav>
+			<ul> <!-- unordered list, not ordered with numbers -->
+				<li id="navigate1">
+					nav
+				</li>
+			</ul>
+		</nav>
+		<main> <!-- the main portion of the body --> <!-- main is a child of head -->
+			<p class="red"> <!-- paragraph -->
+				Hello World! <!-- text --> 
+			<br> <!-- line break does not need a closing tag -->
+			<a href="http://www.sfu.ca" id="sfu_link" style="background-color: yellow;">Link to SFU website</a> 
+			<!-- tag for links to websites with id -->
+			<br>
+			<img src="node.svg" alt="node"> 
+			<!-- image tag, alt is alternative text if image display fails-->
+			<br>
+			CMPT 276
+			</p>
+			<form action="index.html" method="post"> 
+				<!-- form is on user side to be filled up and sent to the server-->
+				<!-- action is where the information is being sent to on the server-->
+				<input type="text" name="fname" value=""> 
+				<!-- type is a text box, name is to be provided by the user, passed along with a variable -->
+				<input type="password" name="pwd" placeholder="password"> <!-- placeholder is the default value in the box shown to the users-->
+				<input type="email" name="" required> <!-- required will check for validity -->
+				<input type="submit" name="submit" value="SUBMIT"> <!-- value will be shown on the form to the user-->
+			</form>			
+		</main>
+		<footer> Copyright </footer> <!-- another child of main -->
+	</body>
+</html>  <!-- html ending container -->
