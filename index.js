@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg'); 
 var pool; 
 pool = new Pool ({ // a constructor pool 
-	connectionString: 'postgres://postgres:root@localhost/users' //scheme://user:password@localhost/database
+	connectionString: 'postgres://postgres:root@localhost/persons' //scheme://user:password@localhost/database
 	// connectionString: process.env.DATABASE_URL; 
 });
 
@@ -20,24 +20,103 @@ app.set('view engine', 'ejs'); //the .ejs files add more functionalities to the 
 // get is when user sends a request, it will be a link 
 // the response to the request is set to be .render('pages/index')
 app.get('/', (req, res) => res.render('pages/index'));
+
+size = []; 
+height = []; 
+type = []; 
+
 // what to do if request is database 
-app.get('/database', (req, res) => { // whenever user types into the app
-	var getUserQuery = 'SELECT * FROM usr'; 
-	pool.query(getUserQuery, (error, result)=>{
+app.get('/people', (req, res) => { // whenever user types into the app
+	var viewPersonQuery = 'SELECT name FROM person ORDER BY name'; 
+	var selectSizeQuery = 'SELECT size FROM person'; 
+	var selectHeightQuery = 'SELECT height FROM person'; 
+	var selectTypeQuery = 'SELECT type FROM person'; 
+
+	// Name List Display
+	pool.query(viewPersonQuery, (error, result)=>{
 		if (error)
 			res.end(error); // send error object if there is error
 		var results = {'rows': result.rows}; // array of rows
 		res.render('pages/db', results);
 	})
+
+	// For Overview Graph Display 
+	pool.query(selectSizeQuery, (error, result)=>{
+		if (error)
+			res.end(error); // send error object if there is error
+		for (let i = 0; i < (result.rows).length; i++) {
+			size.push(result.rows[i]); 
+		}
+	})
+	pool.query(selectHeightQuery, (error, result)=>{
+		if (error)
+			res.end(error); // send error object if there is error
+		for (let i = 0; i < (result.rows).length; i++) {
+			height.push(result.rows[i]); 
+		}
+	})
+	pool.query(selectTypeQuery, (error, result)=>{
+		if (error)
+			res.end(error); // send error object if there is error
+		for (let i = 0; i < (result.rows).length; i++) {
+			type.push(result.rows[i]); 
+		}
+	})
 }); 
 
 // from the post method of the user, and will do the corresponding actions
-app.post('/adduser', (req, res) => {
-	console.log("post request for /adduser"); 
-	var uname = req.body.uname; // from the web app, .uname is the name of a tag
-	var age = req.body.age; 
-	res.send(`username: ${uname}, age: ${age}`);	
+// app.post('/adduser', (req, res) => {
+// 	console.log("post request for /adduser"); 
+// 	var uname = req.body.uname; // from the web app, .uname is the name of a tag
+// 	var age = req.body.age; 
+// 	res.send(`username: ${uname}, age: ${age}`);	
+// }); 
+
+// add user
+app.post('/addUser', (req, res) => {
+	var name = req.body.a_name;
+	var size = req.body.a_size;
+	var height = req.body.a_height;
+	var type = req.body.a_type; 
+	var id = req.body.a_id; 
+	var query = 'INSERT INTO person VALUES '; 
+	var addUserQuery = query.concat('(\'', name, '\', ' , size, ', ' , height, ', \'', type, '\', \'', id, '\')');
+	pool.query(addUserQuery, (error, result)=>{
+		if (error)
+			res.end(error);
+		res.send("Information Added! ");
+	})
 }); 
+
+// update user 
+app.post('/updateUser', (req, res) => {
+	var og_id = req.body.input_id; 
+	var name = req.body.u_name;
+	var size = req.body.u_size;
+	var height = req.body.u_height;
+	var type = req.body.u_type; 
+	var id = req.body.u_id; 
+	var query = 'UPDATE person SET name = \''; 
+	var updateUserQuery = query.concat(name, '\', size = ', size, ', height = ', 
+									   height, ', type = \'', type, '\', id = \'', 
+									   id, '\' WHERE id = \'', og_id, '\'');
+	pool.query(updateUserQuery, (error, result)=>{
+		if (error)
+			res.end(error);
+		res.send("Update Succeeded!");
+	}) 
+});
+
+app.post('/deleteUser', (req, res) => {
+	var id = req.body.d_id; 
+	var query = 'DELETE FROM person WHERE id = \''; 
+	var deleteUserQuery = query.concat(id, '\'');
+	pool.query(deleteUserQuery, (error, result)=>{
+		if (error)
+			res.end(error);
+		res.send("Record Deleted!");
+	}) 
+});
 
 app.get(`/users/:id`, (req, res) => {
 	var uid = req.params.id; 

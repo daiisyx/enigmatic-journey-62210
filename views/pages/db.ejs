@@ -6,18 +6,54 @@
 
 <body>
 
-<% include ../partials/nav.ejs %>
+	<% include ../partials/nav.ejs %>
 
-<div class="container">
-<h2>Database Results</h2>
+	<div class="container">
 
-<ul>
-    <% rows.forEach(function(r) { %>
-        <li><%= r.uid %>, <%= r.age %></li> <!-- print -->
-    <% }); %>
-</ul>
+	<h2>Name List: </h2>
+	    <% rows.forEach(function(r) { %>
+        	<li><%= r.name %></li> 
+    	<% }); %>
 
-</div>
+	<h2>Overview Display With Names: </h2>
+	<p style="font-style: italic;">For more information, click on the names. </p>
+	<form action="/drawDisplay">
+		<canvas id="display"></canvas>
+	</form>
 
+	<h2>Database Operations: </h2>
+	<ul>
+		<h3>Add New People: </h3>
+		<form class="" action="/addUser" method="post">
+			<input type="text" name="a_name" placeholder="NAME"> 
+			<input type="number" name="a_size" placeholder="SIZE"> 
+			<input type="number" name="a_height" placeholder="HEIGHT"> 
+			<input type="text" name="a_type" placeholder="TYPE">
+			<input type="text" name="a_id" placeholder="ID">
+			<input type="submit" name="add" placeholder="Add Record"> 
+		</form>
+
+		<h3>Change Attributes: </h3>
+		<p>Please type the ID of the record that you would like to modify: </p> 
+		<form class="" action="/updateUser" method="post">
+			<input type="text" name="input_id" placeholder="ID">
+			<p>New Data: </p>
+			<input type="text" name="u_name" placeholder="NAME"> 
+			<input type="number" name="u_size" placeholder="SIZE"> 
+			<input type="number" name="u_height" placeholder="HEIGHT"> 
+			<input type="text" name="u_type" placeholder="TYPE">
+			<input type="text" name="u_id" placeholder="ID">
+			<input type="submit" name="update" placeholder="Update Record"> 
+		</form>
+
+		<h3>Delete People: </h3>
+		<p>Please type the ID of the record that you would like to delete: </p> 
+		<form class="" action="/deleteUser" method="post">
+			<input type="text" name="d_id" placeholder="ID">
+			<input type="submit" name="get" placeholder="Submit ID"> 
+		</form>
+	</ul>
+	</div>
 </body>
+	<script type="" src="main_display.js"></script>
 </html>
