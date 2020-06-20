@@ -24,6 +24,8 @@ app.get('/', (req, res) => res.render('pages/index'));
 size = []; 
 height = []; 
 type = []; 
+name = [];
+id = []; 
 
 // what to do if request is database 
 app.get('/people', (req, res) => { // whenever user types into the app
@@ -31,38 +33,56 @@ app.get('/people', (req, res) => { // whenever user types into the app
 	var selectSizeQuery = 'SELECT size FROM person'; 
 	var selectHeightQuery = 'SELECT height FROM person'; 
 	var selectTypeQuery = 'SELECT type FROM person'; 
+	var selectIdQuery = 'SELECT id FROM person'; 
 
 	// Name List Display
 	pool.query(viewPersonQuery, (error, result)=>{
 		if (error)
 			res.end(error); // send error object if there is error
-		var results = {'rows': result.rows}; // array of rows
-		res.render('pages/db', results);
-	})
-
-	// For Overview Graph Display 
-	pool.query(selectSizeQuery, (error, result)=>{
-		if (error)
-			res.end(error); // send error object if there is error
 		for (let i = 0; i < (result.rows).length; i++) {
-			size.push(result.rows[i]); 
+			name.push(result.rows[i]); 
 		}
+	    pool.query(selectSizeQuery, (error, result)=>{
+			if (error)
+				res.end(error); // send error object if there is error
+			for (let i = 0; i < (result.rows).length; i++) {
+				size.push(result.rows[i]); 
+			}
+		})
+		pool.query(selectHeightQuery, (error, result)=>{
+			if (error)
+				res.end(error); // send error object if there is error
+			for (let i = 0; i < (result.rows).length; i++) {
+				height.push(result.rows[i]); 
+			}
+		})
+		pool.query(selectTypeQuery, (error, result)=>{
+			if (error)
+				res.end(error); // send error object if there is error
+			for (let i = 0; i < (result.rows).length; i++) {
+				type.push(result.rows[i]); 
+			}
+		})
+		pool.query(selectIdQuery, (error, result)=>{
+			if (error)
+				res.end(error); // send error object if there is error
+			for (let i = 0; i < (result.rows).length; i++) {
+				id.push(result.rows[i]); 
+			}
+		})
+		var temp1 = name.concat(size); 
+		var temp2 = temp1.concat(height);
+		var temp3 = temp2.concat(type); 
+		var data = temp3.concat(id); 
+		res.render('pages/db', data);
+		// res.send(data);
+		size = []; 
+		height = []; 
+		type = []; 	
+		name = [];
+		id = [];
 	})
-	pool.query(selectHeightQuery, (error, result)=>{
-		if (error)
-			res.end(error); // send error object if there is error
-		for (let i = 0; i < (result.rows).length; i++) {
-			height.push(result.rows[i]); 
-		}
-	})
-	pool.query(selectTypeQuery, (error, result)=>{
-		if (error)
-			res.end(error); // send error object if there is error
-		for (let i = 0; i < (result.rows).length; i++) {
-			type.push(result.rows[i]); 
-		}
-	})
-}); 
+});
 
 // from the post method of the user, and will do the corresponding actions
 // app.post('/adduser', (req, res) => {
@@ -117,6 +137,14 @@ app.post('/deleteUser', (req, res) => {
 		res.send("Record Deleted!");
 	}) 
 });
+
+// app.post('/drawDisplay', (req, res) => {
+// 	var values = Object.values(size[0]);
+// 	for (let i = 1; i < size.length; i++) {
+// 		values.push(Object.values(size[i])[0]); 
+// 	}
+// 	res.send(values);
+// });
 
 app.get(`/users/:id`, (req, res) => {
 	var uid = req.params.id; 

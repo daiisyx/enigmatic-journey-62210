@@ -5,20 +5,27 @@
 </head>
 
 <body>
-
+	<link rel="stylesheet" type="" href="./stylesheets/main_display.css">
+	
 	<% include ../partials/nav.ejs %>
 
 	<div class="container">
-
 	<h2>Name List: </h2>
-	    <% rows.forEach(function(r) { %>
-        	<li><%= r.name %></li> 
-    	<% }); %>
+		<ul>
+		    <% name.forEach(function(r) { %>
+		        <li><%= r.name %></li>
+		    <% }); %>
+		</ul>
 
 	<h2>Overview Display With Names: </h2>
 	<p style="font-style: italic;">For more information, click on the names. </p>
-	<form action="/drawDisplay">
-		<canvas id="display"></canvas>
+	<form class="" action="/viewInfo" method="post">
+		<% name.forEach(function(r) { %>
+			<input type="button" name='<%= r.name %>' 
+				   value='<%= r.name %>' id='<%= r.id %>'
+				   style="font-size: 15px; border: none; 
+				          padding: 60px 10px;">
+		<% }); %>
 	</form>
 
 	<h2>Database Operations: </h2>
