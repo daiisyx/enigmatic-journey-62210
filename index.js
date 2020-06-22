@@ -36,6 +36,7 @@ app.get('/people', (req, res) => { // whenever user types into the app
 	var selectHeightQuery = 'SELECT height FROM person'; 
 	var selectTypeQuery = 'SELECT type FROM person'; 
 	var selectIdQuery = 'SELECT id FROM person'; 
+	// var selectAllQuery = 'SELECT * FROM person'; 
 
 	// Name List Display
 	pool.query(viewPersonQuery, (error, result)=>{
@@ -77,19 +78,27 @@ app.get('/people', (req, res) => { // whenever user types into the app
 				var row = {'id':trimmed}; 
 				id.push(row);   
 			}
+			name_copy = name;
+			var temp1 = name.concat(size); 
+			var temp2 = temp1.concat(height);
+			var temp3 = temp2.concat(type); 
+			var data = temp3.concat(id); 
+
+			res.render('pages/db', data);
+			size = []; 
+			height = []; 
+			type = []; 	
+			name = [];
+			id = [];
 		})
-		name_copy = name;
-		var temp1 = name.concat(size); 
-		var temp2 = temp1.concat(height);
-		var temp3 = temp2.concat(type); 
-		var data = temp3.concat(id); 
-		res.render('pages/db', data);
-		size = []; 
-		height = []; 
-		type = []; 	
-		name = [];
-		id = [];
-	})
+		// pool.query(selectAllQuery, (error, result)=>{
+		// 	if (error)
+		// 		res.end(error);
+		// 	var results = {'rows': result.rows};
+		// 	res.render('pages/db', results);
+		// })
+
+	}); 
 });
 
 // from the post method of the user, and will do the corresponding actions
