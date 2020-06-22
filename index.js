@@ -8,7 +8,7 @@ var pool;
 pool = new Pool ({ // a constructor pool 
 	// connectionString: 'postgres://postgres:root@localhost/persons' 
 	//scheme://user:password@localhost/database
-	connectionString: process.env.DATABASE_URL; 
+	connectionString: process.env.DATABASE_URL
 });
 
 var app = express(); // building a app
