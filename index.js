@@ -26,6 +26,7 @@ height = [];
 type = []; 
 name = [];
 id = []; 
+name_copy = [];
 
 // what to do if request is database 
 app.get('/people', (req, res) => { // whenever user types into the app
@@ -40,7 +41,9 @@ app.get('/people', (req, res) => { // whenever user types into the app
 		if (error)
 			res.end(error); // send error object if there is error
 		for (let i = 0; i < (result.rows).length; i++) {
-			name.push(result.rows[i]); 
+			var trimmed = (Object.values(result.rows[i])[0]).trim(); 
+			var row = {'name':trimmed}; 
+			name.push(row); 
 		}
 	    pool.query(selectSizeQuery, (error, result)=>{
 			if (error)
@@ -60,22 +63,26 @@ app.get('/people', (req, res) => { // whenever user types into the app
 			if (error)
 				res.end(error); // send error object if there is error
 			for (let i = 0; i < (result.rows).length; i++) {
-				type.push(result.rows[i]); 
+				var trimmed = (Object.values(result.rows[i])[0]).trim(); 
+				var row = {'type':trimmed}; 
+				type.push(row);  
 			}
 		})
 		pool.query(selectIdQuery, (error, result)=>{
 			if (error)
 				res.end(error); // send error object if there is error
 			for (let i = 0; i < (result.rows).length; i++) {
-				id.push(result.rows[i]); 
+				var trimmed = (Object.values(result.rows[i])[0]).trim(); 
+				var row = {'id':trimmed}; 
+				id.push(row);   
 			}
 		})
+		name_copy = name;
 		var temp1 = name.concat(size); 
 		var temp2 = temp1.concat(height);
 		var temp3 = temp2.concat(type); 
 		var data = temp3.concat(id); 
 		res.render('pages/db', data);
-		// res.send(data);
 		size = []; 
 		height = []; 
 		type = []; 	
@@ -121,8 +128,9 @@ app.post('/updateUser', (req, res) => {
 									   height, ', type = \'', type, '\', id = \'', 
 									   id, '\' WHERE id = \'', og_id, '\'');
 	pool.query(updateUserQuery, (error, result)=>{
-		if (error)
+		if (error) {
 			res.end(error);
+		}
 		res.send("Update Succeeded!");
 	}) 
 });
@@ -138,13 +146,33 @@ app.post('/deleteUser', (req, res) => {
 	}) 
 });
 
-// app.post('/drawDisplay', (req, res) => {
-// 	var values = Object.values(size[0]);
-// 	for (let i = 1; i < size.length; i++) {
-// 		values.push(Object.values(size[i])[0]); 
-// 	}
-// 	res.send(values);
-// });
+results = []; 
+testing = []
+app.post('/viewInfo', (req, res) => {
+	for (let i = 0; i < name_copy.length; i++) {
+		var name_val = (Object.values(name_copy[i])[0]);
+		// reference: https://stackoverflow.com/questions/41918674/how-to-use-a-variable-in-req-body-nodejs
+		var name = req.body[name_val];
+		if (name == null) {
+			continue;
+		}
+		var query = 'SELECT * FROM person WHERE name = \''; 
+		var viewInfoQuery = query.concat(name, '\'');
+		pool.query(viewInfoQuery, (error, result)=>{
+			if (error)
+				res.end(error);
+			var name_trimmed = ((result.rows[0])['name']).trim(); 
+			var type_trimmed = ((result.rows[0])['type']).trim();
+			var id_trimmed = ((result.rows[0])['id']).trim();
+			var size = (result.rows[0])['size']; 
+			var height = (result.rows[0])['height'];
+			results = [{'name':name_trimmed}, {'size':size}, {'height':height}, 
+						{'type':type_trimmed}, {'id':id_trimmed}];
+			res.send(results);		
+		}) 
+	}
+	results = [];
+});
 
 app.get(`/users/:id`, (req, res) => {
 	var uid = req.params.id; 

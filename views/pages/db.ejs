@@ -21,10 +21,11 @@
 	<p style="font-style: italic;">For more information, click on the names. </p>
 	<form class="" action="/viewInfo" method="post">
 		<% name.forEach(function(r) { %>
-			<input type="button" name='<%= r.name %>' 
-				   value='<%= r.name %>' id='<%= r.id %>'
+			<input type="submit" value="<%= r.name %>" 
+			       name="<%= r.name %>" 
 				   style="font-size: 15px; border: none; 
-				          padding: 60px 10px;">
+				          padding: 30px; text-align: center;
+				          background-color: green; color: white;">
 		<% }); %>
 	</form>
 
