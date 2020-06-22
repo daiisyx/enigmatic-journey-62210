@@ -5,7 +5,6 @@
 </head>
 
 <body>
-	<link rel="stylesheet" type="" href="./stylesheets/main_display.css">
 	
 	<% include ../partials/nav.ejs %>
 
@@ -22,9 +21,9 @@
 	<form class="" action="/viewInfo" method="post">
 		<% name.forEach(function(r) { %>
 			<input type="submit" value="<%= r.name %>" 
-			       name="<%= r.name %>" 
+			       name="<%= r.name %>" id="<%= r.name %>"
 				   style="font-size: 15px; border: none; 
-				          padding: 30px; text-align: center;
+				          padding: 60px 10px; text-align: center;
 				          background-color: green; color: white;">
 		<% }); %>
 	</form>
@@ -63,5 +62,4 @@
 	</ul>
 	</div>
 </body>
-	<script type="" src="main_display.js"></script>
 </html>
